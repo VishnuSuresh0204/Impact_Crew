@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h2 style="color: var(--primary-color);">Welcome back, {{ vol.name }}!</h2>
+        <p style="color: #94a3b8;">Discover events and make an impact today.</p>
+    </div>
+    <a href="{% url 'volunteer_profile' %}" class="btn btn-outline">My Profile</a>
+</div>
+
+<h3 style="margin-bottom: 1rem;">Upcoming Events</h3>
+<div class="grid">
+    {% for event in events %}
+    <div class="card">
+        <h3 style="color: var(--accent-color); margin-bottom: 0.5rem;">{{ event.title }}</h3>
+        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">
+            📅 {{ event.date }} | ⏰ {{ event.time }}<br>
+            📍 {{ event.location }}
+        </p>
+        <p style="margin-bottom: 1rem;">{{ event.description|truncatewords:20 }}</p>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.8rem; color: #f59e0b; font-weight: bold;">
+                Req: {{ event.max_volunteers }} Vols
+            </span>
+            <a href="{% url 'apply_event' event.id %}" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">Apply Now</a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+        <h3>No upcoming events currently.</h3>
+        <p style="color: #94a3b8;">Check back later for new opportunities to volunteer!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
