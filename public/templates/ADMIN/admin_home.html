@@ -1,0 +1,116 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h2 class="page-title">SYSTEM <span>DASHBOARD</span></h2>
+    <p class="page-subtitle">Real-time overview of emergency operations and resources</p>
+</div>
+
+<div class="row g-4 mb-5">
+    <!-- Stat 1 -->
+    <div class="col-md-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon cyan">
+                <i class="fas fa-users"></i>
+            </div>
+            <h1 class="stat-value">{{ citizens_count }}</h1>
+            <h5 class="stat-label">Citizens</h5>
+        </div>
+    </div>
+    <!-- Stat 2 -->
+    <div class="col-md-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon green">
+                <i class="fas fa-building-shield"></i>
+            </div>
+            <h1 class="stat-value">{{ centers_count }}</h1>
+            <h5 class="stat-label">Centers</h5>
+        </div>
+    </div>
+    <!-- Stat 3 -->
+    <div class="col-md-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon violet">
+                <i class="fas fa-file-invoice"></i>
+            </div>
+            <h1 class="stat-value">{{ reports_count }}</h1>
+            <h5 class="stat-label">Total Reports</h5>
+        </div>
+    </div>
+    <!-- Stat 4 -->
+    <div class="col-md-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon red">
+                <i class="fas fa-triangle-exclamation"></i>
+            </div>
+            <h1 class="stat-value">{{ pending_reports }}</h1>
+            <h5 class="stat-label">Pending</h5>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <a href="/admin_manage_districts" class="action-card">
+            <i class="fas fa-map action-icon text-cyan"></i>
+            <h5>MANAGE DISTRICTS</h5>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/admin_manage_centers" class="action-card">
+            <i class="fas fa-truck-monster action-icon text-success"></i>
+            <h5>RESCUE CENTERS</h5>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/admin_view_reports" class="action-card">
+            <i class="fas fa-clipboard-list action-icon text-danger"></i>
+            <h5>EMERGENCY REPORTS</h5>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/admin_manage_guidelines" class="action-card">
+            <i class="fas fa-book-medical action-icon text-warning"></i>
+            <h5>SAFETY GUIDELINES</h5>
+        </a>
+    </div>
+</div>
+
+<div class="content-card mt-5">
+    <h4 class="page-title mb-4" style="font-size:1.3rem;"><i class="fas fa-satellite-dish me-2" style="color:var(--neon-violet);"></i> RECENT REPORTS</h4>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Category</th>
+                    <th>Citizen ID</th>
+                    <th>System Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in recent_reports %}
+                <tr>
+                    <td>{{ r.reported_at|date:"M d, Y H:i" }}</td>
+                    <td class="fw-semibold"><i class="fas fa-circle-exclamation text-danger me-2"></i>{{ r.category.name }}</td>
+                    <td>{{ r.citizen.name }}</td>
+                    <td>
+                        {% if r.status == 'Pending' %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% elif r.status == 'Resolved' %}
+                            <span class="badge bg-success">Resolved</span>
+                        {% else %}
+                            <span class="badge bg-info">{{ r.status }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center py-4" style="color:var(--text-muted);">No recent reports detected in the system.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
