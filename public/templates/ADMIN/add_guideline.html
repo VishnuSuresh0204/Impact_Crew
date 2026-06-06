@@ -1,0 +1,41 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="content-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="page-title mb-0" style="font-size:1.5rem;">
+                    <i class="fas fa-plus-circle me-2 text-primary"></i> ADD GUIDELINE
+                </h2>
+                <a href="/admin_manage_guidelines" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Return
+                </a>
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="title" class="form-label">Guideline Title</label>
+                    <input type="text" name="title" id="title" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Guideline Content</label>
+                    <textarea name="content" id="content" class="form-control" rows="5" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Supporting Document (Optional)</label>
+                    <div class="file-upload-wrapper" style="border: 2px dashed rgba(139,92,246,0.3); padding: 2rem; border-radius: 12px; text-align: center; background: rgba(139,92,246,0.02); position: relative; cursor: pointer;">
+                        <i class="fas fa-cloud-upload-alt mb-2" style="font-size:2rem; color:var(--neon-violet);"></i>
+                        <p class="mb-0 text-muted" style="font-size:0.85rem;">Click or drag file to upload</p>
+                        <input type="file" name="document" style="position: absolute; inset: 0; opacity: 0; cursor: pointer;">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold" style="letter-spacing:1px;">
+                    <i class="fas fa-satellite-dish me-2"></i> DEPLOY GUIDELINE
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
