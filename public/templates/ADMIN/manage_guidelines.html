@@ -1,0 +1,46 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+<div class="content-card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="page-title mb-0" style="font-size:1.5rem;">
+            <i class="fas fa-book-medical me-2 text-warning"></i> SAFETY GUIDELINES
+        </h2>
+        <div>
+            <a href="/admin_add_guideline" class="btn btn-primary btn-sm me-2">
+                <i class="fas fa-plus me-1"></i> ADD NEW
+            </a>
+            <a href="/admin_home" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-arrow-left me-1"></i> Return
+            </a>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        {% for g in guidelines %}
+        <div class="dashboard-card mb-3 p-4 d-flex align-items-start" style="border-radius:14px; border-left: 3px solid var(--neon-warning);">
+            <div class="me-4" style="font-size:2rem; color:var(--text-muted);">
+                <i class="fas fa-file-shield text-warning"></i>
+            </div>
+            <div class="flex-grow-1">
+                <div class="d-flex justify-content-between mb-2">
+                    <h5 class="fw-bold text-main mb-0" style="font-family:var(--font-head); letter-spacing:1px;">{{ g.title|upper }}</h5>
+                    <span class="badge bg-dark border border-secondary text-muted">{{ g.created_at|date:"d M Y" }}</span>
+                </div>
+                <p class="text-muted mb-3" style="font-size:0.9rem;">{{ g.content|truncatewords:25 }}</p>
+                {% if g.document %}
+                <a href="{{ g.document.url }}" class="btn btn-sm btn-outline-primary" target="_blank" style="font-size:0.75rem;">
+                    <i class="fas fa-download me-1"></i> ACCESS DOCUMENT
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-5">
+            <i class="fas fa-folder-open mb-3" style="font-size:3rem; color:var(--text-muted);"></i>
+            <h5 class="text-muted">No guidelines registered in database.</h5>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
