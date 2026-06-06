@@ -1,0 +1,62 @@
+{% extends 'volunteer/base_volunteer.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h2 style="color: var(--primary-color);">My Task Dashboard</h2>
+        <p style="color: #94a3b8;">Track and update the status of your assigned tasks below.</p>
+    </div>
+    <a href="{% url 'volunteer_history' %}" class="btn btn-outline">📋 Participation History</a>
+</div>
+
+{% if assignments %}
+    {% for assignment in assignments %}
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h3 style="color: var(--primary-color); margin-bottom: 0.3rem;">{{ assignment.task.title }}</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem;">Event: <strong style="color: #f8fafc;">{{ assignment.task.event.title }}</strong></p>
+                <p style="color: #cbd5e1; font-size: 0.95rem;">{{ assignment.task.description }}</p>
+            </div>
+            <div style="text-align: right;">
+                <span style="
+                    display: inline-block;
+                    padding: 0.3rem 0.75rem;
+                    border-radius: 6px;
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    {% if assignment.status == 'Completed' %}
+                        background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3);
+                    {% elif assignment.status == 'In Progress' %}
+                        background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3);
+                    {% else %}
+                        background: rgba(148,163,184,0.15); color: #94a3b8; border: 1px solid rgba(148,163,184,0.3);
+                    {% endif %}
+                ">{{ assignment.status }}</span>
+                <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">Assigned {{ assignment.assigned_at|date:"M d, Y" }}</p>
+            </div>
+        </div>
+
+        {% if assignment.status != 'Completed' %}
+        <form method="POST" action="{% url 'update_task_assignment_status' assignment.id %}" style="display: flex; align-items: center; gap: 1rem; margin-top: 1.25rem; flex-wrap: wrap;">
+            {% csrf_token %}
+            <select name="status" style="padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: var(--text-color); font-size: 0.95rem; flex: 1; min-width: 180px;">
+                <option value="Assigned" {% if assignment.status == 'Assigned' %}selected{% endif %}>Assigned</option>
+                <option value="In Progress" {% if assignment.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+            <button type="submit" class="btn" style="padding: 0.6rem 1.25rem;">Update Status</button>
+        </form>
+        {% else %}
+        <p style="margin-top: 1rem; color: #34d399; font-weight: 600;">✅ Task Completed</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+<div class="card" style="text-align: center; padding: 3rem;">
+    <h3>No tasks assigned yet.</h3>
+    <p style="color: #94a3b8; margin: 1rem 0;">Apply for events to get tasks assigned by your organizer.</p>
+    <a href="{% url 'volunteer_dashboard' %}" class="btn">Browse Events</a>
+</div>
+{% endif %}
+{% endblock %}

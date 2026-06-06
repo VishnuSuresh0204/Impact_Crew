@@ -1,12 +1,16 @@
 {% extends 'volunteer/base_volunteer.html' %}
 
 {% block content %}
-<div class="card" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+<div class="card" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
     <div>
-        <h2 style="color: var(--primary-color);">Welcome back, {{ vol.name }}!</h2>
+        <h2 style="color: var(--primary-color);">Welcome back, {{ vol.name }}! 👋</h2>
         <p style="color: #94a3b8;">Discover events and make an impact today.</p>
     </div>
-    <a href="{% url 'volunteer_profile' %}" class="btn btn-outline">My Profile</a>
+    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <a href="{% url 'volunteer_profile' %}" class="btn btn-outline">👤 Profile</a>
+        <a href="{% url 'volunteer_tasks' %}" class="btn btn-outline">📋 My Tasks</a>
+        <a href="{% url 'volunteer_history' %}" class="btn btn-outline">🏅 History</a>
+    </div>
 </div>
 
 <h3 style="margin-bottom: 1rem;">Upcoming Events</h3>
@@ -14,14 +18,17 @@
     {% for event in events %}
     <div class="card">
         <h3 style="color: var(--accent-color); margin-bottom: 0.5rem;">{{ event.title }}</h3>
-        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">
+        <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0.5rem;">
             📅 {{ event.date }} | ⏰ {{ event.time }}<br>
             📍 {{ event.location }}
         </p>
-        <p style="margin-bottom: 1rem;">{{ event.description|truncatewords:20 }}</p>
+        {% if event.category %}
+        <p style="font-size: 0.8rem; color: #60a5fa; margin-bottom: 0.5rem;">🏷️ {{ event.category.name }}</p>
+        {% endif %}
+        <p style="margin-bottom: 1rem; color: #cbd5e1;">{{ event.description|truncatewords:20 }}</p>
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="font-size: 0.8rem; color: #f59e0b; font-weight: bold;">
-                Req: {{ event.max_volunteers }} Vols
+                👥 Max: {{ event.max_volunteers }} Volunteers
             </span>
             <a href="{% url 'apply_event' event.id %}" class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">Apply Now</a>
         </div>
@@ -29,8 +36,9 @@
     {% empty %}
     <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
         <h3>No upcoming events currently.</h3>
-        <p style="color: #94a3b8;">Check back later for new opportunities to volunteer!</p>
+        <p style="color: #94a3b8; margin-top: 0.5rem;">Check back later for new opportunities to volunteer!</p>
     </div>
     {% endfor %}
 </div>
 {% endblock %}
+

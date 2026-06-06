@@ -1,0 +1,78 @@
+{% extends 'volunteer/base_volunteer.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h2 style="color: var(--primary-color);">Participation History</h2>
+        <p style="color: #94a3b8;">Track all your event applications, attendance records, and performance ratings.</p>
+    </div>
+    <a href="{% url 'submit_feedback' %}" class="btn btn-outline">📝 Submit Feedback</a>
+</div>
+
+{% if history %}
+    {% for item in history %}
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+            <div style="flex: 1;">
+                <h3 style="color: var(--primary-color); margin-bottom: 0.3rem;">{{ item.event.title }}</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem;">
+                    📅 {{ item.event.date }} &nbsp;|&nbsp; 📍 {{ item.event.location }}
+                </p>
+            </div>
+            <!-- Application Status -->
+            <span style="
+                padding: 0.3rem 0.9rem;
+                border-radius: 20px;
+                font-size: 0.82rem;
+                font-weight: 700;
+                {% if item.app_status == 'Approved' %}background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3);
+                {% elif item.app_status == 'Rejected' %}background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3);
+                {% else %}background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3);{% endif %}
+            ">{{ item.app_status }}</span>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1.25rem;">
+            <!-- Attendance -->
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 0.85rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Attendance:</span>
+                {% if item.is_present == None %}
+                    <span style="color: #64748b;">Not Recorded</span>
+                {% elif item.is_present %}
+                    <span style="color: #34d399; font-weight: 600;">✅ Present</span>
+                {% else %}
+                    <span style="color: #f87171; font-weight: 600;">❌ Absent</span>
+                {% endif %}
+            </div>
+
+            <!-- Rating -->
+            {% if item.review %}
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 0.85rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Rating:</span>
+                <span style="color: #fbbf24; font-weight: 700;">
+                    {% for i in "12345"|make_list %}{% if forloop.counter <= item.review.rating %}⭐{% endif %}{% endfor %}
+                    ({{ item.review.rating }}/5)
+                </span>
+            </div>
+
+            {% if item.review.remarks %}
+            <div style="width: 100%; margin-top: 0.5rem;">
+                <span style="font-size: 0.85rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Remarks:</span>
+                <p style="color: #cbd5e1; font-style: italic; margin-top: 0.3rem;">"{{ item.review.remarks }}"</p>
+            </div>
+            {% endif %}
+
+            <div>
+                <a href="{% url 'view_certificate' item.review.id %}" class="btn" style="padding: 0.4rem 0.9rem; font-size: 0.85rem; margin-top: 0.25rem;">🎖️ View Certificate</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+<div class="card" style="text-align: center; padding: 3rem;">
+    <h3>No participation history yet.</h3>
+    <p style="color: #94a3b8; margin: 1rem 0;">Apply for events and start building your volunteering record!</p>
+    <a href="{% url 'volunteer_dashboard' %}" class="btn">Browse Events</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 750px; margin: 0 auto;">
+    <div class="card" style="margin-bottom: 2rem;">
+        <h2 style="color: var(--primary-color); margin-bottom: 0.5rem;">💬 Feedback & Complaints</h2>
+        <p style="color: #94a3b8;">Share your feedback, suggestions, or complaints. Our admin team will respond promptly.</p>
+    </div>
+
+    <!-- Submit Form -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1.25rem; color: var(--primary-color);">Submit New Feedback</h3>
+        <form method="POST" action="{% url 'submit_feedback' %}">
+            {% csrf_token %}
+            <div style="display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem;">
+                <label>Subject</label>
+                <input type="text" name="subject" required placeholder="Brief description of your feedback or complaint">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.5rem;">
+                <label>Message</label>
+                <textarea name="message" rows="5" required placeholder="Describe your feedback or issue in detail..."></textarea>
+            </div>
+            <button type="submit" class="btn">Submit Feedback</button>
+        </form>
+    </div>
+
+    <!-- Feedback History -->
+    {% if feedbacks %}
+    <h3 style="margin-bottom: 1rem; color: #94a3b8;">Your Previous Submissions</h3>
+    {% for fb in feedbacks %}
+    <div class="card" style="margin-bottom: 1rem; border-left: 4px solid {% if fb.status == 'Resolved' %}var(--accent-color){% else %}var(--primary-color){% endif %}; border-radius: 0 12px 12px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <h4 style="color: var(--text-color);">{{ fb.subject }}</h4>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-size: 0.8rem; color: #64748b;">{{ fb.created_at|date:"M d, Y" }}</span>
+                <span style="
+                    padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+                    {% if fb.status == 'Resolved' %}background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3);
+                    {% else %}background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3);{% endif %}
+                ">{{ fb.status }}</span>
+            </div>
+        </div>
+        <p style="color: #cbd5e1; margin-bottom: 0.75rem;">{{ fb.message }}</p>
+        {% if fb.reply %}
+        <div style="background: rgba(255,255,255,0.04); border-left: 3px solid var(--accent-color); border-radius: 0 8px 8px 0; padding: 0.75rem 1rem; margin-top: 0.75rem;">
+            <p style="font-size: 0.82rem; color: var(--accent-color); font-weight: 600; margin-bottom: 0.3rem;">Admin Reply:</p>
+            <p style="color: #e2e8f0;">{{ fb.reply }}</p>
+        </div>
+        {% else %}
+        <p style="color: #64748b; font-size: 0.85rem; font-style: italic; margin-top: 0.5rem;">⏳ Awaiting admin response...</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
