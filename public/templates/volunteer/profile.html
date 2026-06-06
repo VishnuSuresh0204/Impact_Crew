@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display: flex; justify-content: center;">
+    <div class="card" style="width: 100%; max-width: 600px;">
+        <h2 style="margin-bottom: 1.5rem; color: var(--accent-color); text-align: center;">My Profile</h2>
+        
+        <div style="margin-bottom: 1.5rem;">
+            <p><strong>Name:</strong> {{ vol.name }}</p>
+            <p><strong>Email:</strong> {{ vol.email }}</p>
+            <p><strong>Phone:</strong> {{ vol.phone }}</p>
+            <p><strong>Address:</strong> {{ vol.address }}</p>
+        </div>
+
+        <h3 style="margin-bottom: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">Update Details</h3>
+        <form method="POST" action="{% url 'volunteer_profile' %}">
+            {% csrf_token %}
+            <div>
+                <label for="address">Address</label>
+                <textarea id="address" name="address" rows="3">{{ vol.address }}</textarea>
+            </div>
+            
+            <!-- Skills/Interests updates can be added here in future iterations -->
+
+            <button type="submit" class="btn" style="margin-top: 1rem;" disabled>Update Profile (Coming Soon)</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
