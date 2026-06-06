@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="hero">
+<div class="hero" style="background-image: linear-gradient(rgba(11, 17, 32, 0.7), rgba(11, 17, 32, 0.9)), url('/static/images/real-hero-bg.jpg');">
     <h1>Connect. Contribute. Impact.</h1>
     <p>ImpactCrew is an intelligent event volunteer management system designed to seamlessly connect passionate volunteers with impactful community initiatives.</p>
     <div style="display: flex; gap: 1rem; margin-top: 2rem;">
@@ -11,17 +11,26 @@
 </div>
 
 <div class="grid" style="margin-top: 4rem;">
-    <div class="card" style="text-align: center;">
-        <h2 style="color: var(--primary-color); margin-bottom: 1rem;">For Volunteers</h2>
-        <p>Discover events that match your skills and passions. Track your hours, build your profile, and make a real difference in the community.</p>
+    <div class="card" style="text-align: center; padding: 0; overflow: hidden;">
+        <img src="/static/images/volunteers_card.png" alt="Volunteers" style="width: 100%; height: 200px; object-fit: cover;">
+        <div style="padding: 2rem;">
+            <h2 style="color: var(--primary-color); margin-bottom: 1rem;">For Volunteers</h2>
+            <p>Discover events that match your skills and passions. Track your hours, build your profile, and make a real difference in the community.</p>
+        </div>
     </div>
-    <div class="card" style="text-align: center;">
-        <h2 style="color: var(--accent-color); margin-bottom: 1rem;">For Organizers</h2>
-        <p>Streamline your volunteer management. Easily recruit, assign tasks, and track attendance all in one powerful platform.</p>
+    <div class="card" style="text-align: center; padding: 0; overflow: hidden;">
+        <img src="/static/images/organizers_card.png" alt="Organizers" style="width: 100%; height: 200px; object-fit: cover;">
+        <div style="padding: 2rem;">
+            <h2 style="color: var(--accent-color); margin-bottom: 1rem;">For Organizers</h2>
+            <p>Streamline your volunteer management. Easily recruit, assign tasks, and track attendance all in one powerful platform.</p>
+        </div>
     </div>
-    <div class="card" style="text-align: center;">
-        <h2 style="color: #f59e0b; margin-bottom: 1rem;">Smart Matching</h2>
-        <p>Our intelligent system matches volunteer skills with event requirements, ensuring the right people are in the right roles.</p>
+    <div class="card" style="text-align: center; padding: 0; overflow: hidden;">
+        <img src="/static/images/matching_card.png" alt="Smart Matching" style="width: 100%; height: 200px; object-fit: cover;">
+        <div style="padding: 2rem;">
+            <h2 style="color: #f59e0b; margin-bottom: 1rem;">Smart Matching</h2>
+            <p>Our intelligent system matches volunteer skills with event requirements, ensuring the right people are in the right roles.</p>
+        </div>
     </div>
 </div>
 {% endblock %}
