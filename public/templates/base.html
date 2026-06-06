@@ -7,13 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f172a;
+            --bg-color: #0b1120;
             --text-color: #f8fafc;
             --primary-color: #3b82f6;
             --primary-hover: #2563eb;
-            --secondary-color: #1e293b;
+            --secondary-color: rgba(30, 41, 59, 0.7);
             --accent-color: #10b981;
-            --border-color: #334155;
+            --border-color: rgba(255, 255, 255, 0.1);
             --danger-color: #ef4444;
         }
 
@@ -109,10 +109,12 @@
 
         .card {
             background: var(--secondary-color);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
 
         form {
@@ -147,8 +149,15 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            min-height: 70vh;
-            background: radial-gradient(circle at top, var(--secondary-color) 0%, var(--bg-color) 100%);
+            min-height: 80vh;
+            background-image: linear-gradient(rgba(11, 17, 32, 0.7), rgba(11, 17, 32, 0.9)), url('/static/images/hero-bg.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            padding: 2rem;
         }
 
         .hero h1 {
