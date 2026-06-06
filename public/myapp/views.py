@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404
+
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -142,7 +143,7 @@ def manage_organizers(request):
 
 @login_required
 def approve_organizer(request, org_id):
-    org = get_object_or_404(Organizer, id=org_id)
+    org = Organizer.objects.get(id=org_id)
     org.status = 'approved'
     org.save()
     messages.success(request, f'Organizer {org.organization_name} approved.')
@@ -150,7 +151,7 @@ def approve_organizer(request, org_id):
 
 @login_required
 def reject_organizer(request, org_id):
-    org = get_object_or_404(Organizer, id=org_id)
+    org = Organizer.objects.get(id=org_id)
     org.status = 'rejected'
     org.save()
     messages.success(request, f'Organizer {org.organization_name} rejected.')
@@ -162,7 +163,7 @@ def reject_organizer(request, org_id):
 # ------------------------------------------------
 @login_required
 def organizer_dashboard(request):
-    org = Organizer.objects.get(loginid=request.user)
+    org = Organizer.objects.get(loginid_id=request.session['lid'])
     if org.status != 'approved':
         return render(request, 'organizer/pending_approval.html')
         
@@ -171,7 +172,7 @@ def organizer_dashboard(request):
 
 @login_required
 def create_event(request):
-    org = Organizer.objects.get(loginid=request.user)
+    org = Organizer.objects.get(loginid_id=request.session['lid'])
     
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -196,7 +197,7 @@ def create_event(request):
 
 @login_required
 def organizer_event_details(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
+    event = Event.objects.get(id=event_id)
     applications = Application.objects.filter(event=event)
     tasks = Task.objects.filter(event=event)
     
@@ -212,7 +213,7 @@ def organizer_event_details(request, event_id):
 # ------------------------------------------------
 @login_required
 def volunteer_dashboard(request):
-    vol = Volunteer.objects.get(loginid=request.user)
+    vol = Volunteer.objects.get(loginid_id=request.session['lid'])
     upcoming_events = Event.objects.filter(status='Upcoming')
     
     return render(request, 'volunteer/dashboard.html', {
@@ -222,8 +223,8 @@ def volunteer_dashboard(request):
 
 @login_required
 def apply_event(request, event_id):
-    vol = Volunteer.objects.get(loginid=request.user)
-    event = get_object_or_404(Event, id=event_id)
+    vol = Volunteer.objects.get(loginid_id=request.session['lid'])
+    event = Event.objects.get(id=event_id)
     
     if not Application.objects.filter(volunteer=vol, event=event).exists():
         Application.objects.create(volunteer=vol, event=event)
@@ -235,7 +236,7 @@ def apply_event(request, event_id):
 
 @login_required
 def volunteer_profile(request):
-    vol = get_object_or_404(Volunteer, loginid=request.user)
+    vol = Volunteer.objects.get(loginid_id=request.session['lid'])
     if request.method == 'POST':
         vol.name = request.POST.get('name')
         vol.phone = request.POST.get('phone')
@@ -288,7 +289,7 @@ def admin_manage_volunteers(request):
 def admin_toggle_volunteer(request, vol_id):
     if not (request.user.is_superuser or request.user.userType == 'admin'):
         return redirect('login')
-    vol = get_object_or_404(Volunteer, id=vol_id)
+    vol = Volunteer.objects.get(id=vol_id)
     login_obj = vol.loginid
     login_obj.is_active = not login_obj.is_active
     login_obj.save()
@@ -321,7 +322,7 @@ def admin_manage_categories(request):
 def admin_delete_category(request, cat_id):
     if not (request.user.is_superuser or request.user.userType == 'admin'):
         return redirect('login')
-    cat = get_object_or_404(Category, id=cat_id)
+    cat = Category.objects.get(id=cat_id)
     cat.delete()
     messages.success(request, "Category deleted successfully.")
     return redirect('admin_manage_categories')
@@ -344,7 +345,7 @@ def admin_manage_skills(request):
 def admin_delete_skill(request, skill_id):
     if not (request.user.is_superuser or request.user.userType == 'admin'):
         return redirect('login')
-    skill = get_object_or_404(Skill, id=skill_id)
+    skill = Skill.objects.get(id=skill_id)
     skill.delete()
     messages.success(request, "Skill deleted successfully.")
     return redirect('admin_manage_skills')
@@ -356,7 +357,7 @@ def admin_feedback(request):
     if request.method == 'POST':
         feedback_id = request.POST.get('feedback_id')
         reply = request.POST.get('reply')
-        fb = get_object_or_404(Feedback, id=feedback_id)
+        fb = Feedback.objects.get(id=feedback_id)
         fb.reply = reply
         fb.status = 'Resolved'
         fb.save()
@@ -406,8 +407,8 @@ def admin_report(request):
 # =========================================================
 @login_required
 def update_application_status(request, app_id, status):
-    org = get_object_or_404(Organizer, loginid=request.user)
-    app = get_object_or_404(Application, id=app_id, event__organizer=org)
+    org = Organizer.objects.get(loginid_id=request.session['lid'])
+    app = Application.objects.get(id=app_id, event__organizer=org)
     
     if status in ['Approved', 'Rejected']:
         app.status = status
@@ -423,8 +424,8 @@ def update_application_status(request, app_id, status):
 
 @login_required
 def create_task(request, event_id):
-    org = get_object_or_404(Organizer, loginid=request.user)
-    event = get_object_or_404(Event, id=event_id, organizer=org)
+    org = Organizer.objects.get(loginid_id=request.session['lid'])
+    event = Event.objects.get(id=event_id, organizer=org)
     
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -443,12 +444,12 @@ def create_task(request, event_id):
 
 @login_required
 def assign_task(request, task_id):
-    org = get_object_or_404(Organizer, loginid=request.user)
-    task = get_object_or_404(Task, id=task_id, event__organizer=org)
+    org = Organizer.objects.get(loginid_id=request.session['lid'])
+    task = Task.objects.get(id=task_id, event__organizer=org)
     
     if request.method == 'POST':
         vol_id = request.POST.get('volunteer')
-        vol = get_object_or_404(Volunteer, id=vol_id)
+        vol = Volunteer.objects.get(id=vol_id)
         
         # Check if already assigned
         if TaskAssignment.objects.filter(task=task, volunteer=vol).exists():
@@ -470,8 +471,8 @@ def assign_task(request, task_id):
 
 @login_required
 def track_attendance(request, event_id):
-    org = get_object_or_404(Organizer, loginid=request.user)
-    event = get_object_or_404(Event, id=event_id, organizer=org)
+    org = Organizer.objects.get(loginid_id=request.session['lid'])
+    event = Event.objects.get(id=event_id, organizer=org)
     approved_apps = Application.objects.filter(event=event, status='Approved')
     
     if request.method == 'POST':
@@ -500,8 +501,8 @@ def track_attendance(request, event_id):
 
 @login_required
 def evaluate_performance(request, event_id):
-    org = get_object_or_404(Organizer, loginid=request.user)
-    event = get_object_or_404(Event, id=event_id, organizer=org)
+    org = Organizer.objects.get(loginid_id=request.session['lid'])
+    event = Event.objects.get(id=event_id, organizer=org)
     
     present_att = Attendance.objects.filter(event=event, is_present=True)
     volunteers = [att.volunteer for att in present_att]
@@ -537,14 +538,14 @@ def evaluate_performance(request, event_id):
 # =========================================================
 @login_required
 def volunteer_tasks(request):
-    vol = get_object_or_404(Volunteer, loginid=request.user)
+    vol = Volunteer.objects.get(loginid_id=request.session['lid'])
     assignments = TaskAssignment.objects.filter(volunteer=vol).order_by('-assigned_at')
     return render(request, 'volunteer/tasks.html', {'assignments': assignments})
 
 @login_required
 def update_task_assignment_status(request, assignment_id):
-    vol = get_object_or_404(Volunteer, loginid=request.user)
-    assignment = get_object_or_404(TaskAssignment, id=assignment_id, volunteer=vol)
+    vol = Volunteer.objects.get(loginid_id=request.session['lid'])
+    assignment = TaskAssignment.objects.get(id=assignment_id, volunteer=vol)
     
     if request.method == 'POST':
         new_status = request.POST.get('status')
@@ -561,7 +562,7 @@ def update_task_assignment_status(request, assignment_id):
 
 @login_required
 def volunteer_history(request):
-    vol = get_object_or_404(Volunteer, loginid=request.user)
+    vol = Volunteer.objects.get(loginid_id=request.session['lid'])
     applications = Application.objects.filter(volunteer=vol).order_by('-applied_at')
     
     reviews = PerformanceReview.objects.filter(volunteer=vol)
@@ -584,7 +585,7 @@ def volunteer_history(request):
 
 @login_required
 def view_certificate(request, review_id):
-    review = get_object_or_404(PerformanceReview, id=review_id)
+    review = PerformanceReview.objects.get(id=review_id)
     
     is_authorized = False
     if request.user.is_superuser or request.user.userType == 'admin':
