@@ -1,0 +1,80 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h1 class="page-title">Manage <span>Skills</span></h1>
+    <p class="page-subtitle">Define volunteer skills that organizers can require for tasks</p>
+</div>
+
+<div class="row g-4">
+    <!-- Add Form -->
+    <div class="col-lg-5">
+        <div class="content-card h-100">
+            <h5 class="mb-4" style="font-family: var(--font-head); color: var(--neon-violet); letter-spacing: 1px; font-size: 0.9rem; text-transform: uppercase;">
+                <i class="fas fa-plus-circle me-2"></i>Add New Skill
+            </h5>
+            <form method="POST" action="{% url 'admin_manage_skills' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Skill Name</label>
+                    <input type="text" name="name" class="form-control" required placeholder="e.g., First Aid, Rescue Swimming">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" class="form-control" rows="4" placeholder="Brief description of the skill"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-plus me-2"></i>Add Skill
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- List -->
+    <div class="col-lg-7">
+        <div class="content-card h-100">
+            <h5 class="mb-4" style="font-family: var(--font-head); color: var(--neon-cyan); letter-spacing: 1px; font-size: 0.9rem; text-transform: uppercase;">
+                <i class="fas fa-list me-2"></i>Existing Skills ({{ skills|length }})
+            </h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Skill</th>
+                            <th>Description</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for skill in skills %}
+                        <tr>
+                            <td class="text-muted">{{ forloop.counter }}</td>
+                            <td>
+                                <span style="font-weight: 600; color: var(--neon-violet);">
+                                    <i class="fas fa-tools me-1" style="font-size:0.75rem;"></i>{{ skill.name }}
+                                </span>
+                            </td>
+                            <td style="color: var(--text-muted); font-size: 0.88rem;">{{ skill.description|default:"—" }}</td>
+                            <td class="text-end">
+                                <a href="{% url 'admin_delete_skill' skill.id %}" class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Delete skill: {{ skill.name }}?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4" style="color: var(--text-muted);">
+                                <div style="font-size: 1.5rem; margin-bottom: 0.4rem;">🛠️</div>
+                                No skills added yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

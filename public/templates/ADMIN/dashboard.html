@@ -1,27 +1,105 @@
 {% extends 'admin/base_admin.html' %}
 
 {% block content %}
-<div class="grid">
-    <div class="card" style="text-align: center;">
-        <h3 style="color: var(--primary-color);">Total Organizers</h3>
-        <p style="font-size: 3rem; font-weight: 800;">{{ total_organizers }}</p>
+<!-- Welcome Header -->
+<div class="page-header mb-4">
+    <h1 class="page-title">Admin <span>Dashboard</span></h1>
+    <p class="page-subtitle">System overview — ImpactCrew Volunteer Management Portal</p>
+</div>
+
+<!-- Stat Row -->
+<div class="row g-3 mb-5">
+    <div class="col-6 col-lg-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon violet mx-auto mb-3"><i class="fas fa-building"></i></div>
+            <div class="stat-value">{{ total_organizers }}</div>
+            <div class="stat-label">Organizers</div>
+        </div>
     </div>
-    <div class="card" style="text-align: center;">
-        <h3 style="color: var(--accent-color);">Total Volunteers</h3>
-        <p style="font-size: 3rem; font-weight: 800;">{{ total_volunteers }}</p>
+    <div class="col-6 col-lg-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon cyan mx-auto mb-3"><i class="fas fa-users"></i></div>
+            <div class="stat-value">{{ total_volunteers }}</div>
+            <div class="stat-label">Volunteers</div>
+        </div>
     </div>
-    <div class="card" style="text-align: center;">
-        <h3 style="color: #f59e0b;">Total Events</h3>
-        <p style="font-size: 3rem; font-weight: 800;">{{ total_events }}</p>
+    <div class="col-6 col-lg-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon amber mx-auto mb-3"><i class="fas fa-calendar-alt"></i></div>
+            <div class="stat-value">{{ total_events }}</div>
+            <div class="stat-label">Events</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon green mx-auto mb-3"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-value">—</div>
+            <div class="stat-label">System OK</div>
+        </div>
     </div>
 </div>
 
-<div class="card" style="margin-top: 2rem;">
-    <h2>Admin Controls</h2>
-    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-        <a href="{% url 'manage_organizers' %}" class="btn">Manage Organizers</a>
-        <button class="btn btn-outline" disabled>Manage Categories (Coming Soon)</button>
-        <button class="btn btn-outline" disabled>Manage Skills (Coming Soon)</button>
+<!-- Module Cards -->
+<div style="font-family:var(--font-head); font-size:0.78rem; letter-spacing:2px; color:var(--text-muted); text-transform:uppercase; margin-bottom:1.25rem;">
+    <i class="fas fa-th me-2"></i>Quick Access Modules
+</div>
+
+<div class="row g-3">
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'manage_organizers' %}" class="action-card">
+            <span class="action-icon" style="color:#c4b5fd;">🏢</span>
+            <h5>Organizers</h5>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.4rem; font-family:var(--font-body);">Approve or reject registrations</p>
+        </a>
+    </div>
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'admin_manage_volunteers' %}" class="action-card">
+            <span class="action-icon" style="color:#67e8f9;">👥</span>
+            <h5>Volunteers</h5>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.4rem; font-family:var(--font-body);">Block or activate accounts</p>
+        </a>
+    </div>
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'admin_monitor_events' %}" class="action-card">
+            <span class="action-icon" style="color:#93c5fd;">📅</span>
+            <h5>Monitor Events</h5>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.4rem; font-family:var(--font-body);">System-wide event oversight</p>
+        </a>
+    </div>
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'admin_manage_categories' %}" class="action-card">
+            <span class="action-icon" style="color:#fde68a;">🗂️</span>
+            <h5>Categories</h5>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.4rem; font-family:var(--font-body);">Manage event categories</p>
+        </a>
+    </div>
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'admin_manage_skills' %}" class="action-card">
+            <span class="action-icon" style="color:#d8b4fe;">🛠️</span>
+            <h5>Skills</h5>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.4rem; font-family:var(--font-body);">Define volunteer competencies</p>
+        </a>
+    </div>
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'admin_feedback' %}" class="action-card">
+            <span class="action-icon" style="color:#6ee7b7;">💬</span>
+            <h5>Feedback</h5>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.4rem; font-family:var(--font-body);">Handle complaints &amp; replies</p>
+        </a>
+    </div>
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'admin_report' %}" class="action-card">
+            <span class="action-icon" style="color:#fca5a5;">📊</span>
+            <h5>Reports</h5>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.4rem; font-family:var(--font-body);">Analytics &amp; printable logs</p>
+        </a>
+    </div>
+    <div class="col-6 col-lg-3">
+        <a href="{% url 'logout' %}" class="action-card" style="border-color: rgba(239,68,68,0.25);">
+            <span class="action-icon" style="color:#f87171;">🔒</span>
+            <h5 style="color:#f87171;">Logout</h5>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.4rem; font-family:var(--font-body);">Sign out of admin portal</p>
+        </a>
     </div>
 </div>
 {% endblock %}

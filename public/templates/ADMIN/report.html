@@ -1,0 +1,139 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block content %}
+<!-- Header -->
+<div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="page-title">Reports <span>&amp; Analytics</span></h1>
+        <p class="page-subtitle">System-wide statistics and printable participation logs</p>
+    </div>
+    <button onclick="window.print();" class="btn btn-outline-primary">
+        <i class="fas fa-print me-2"></i>Print Report
+    </button>
+</div>
+
+<!-- Stat Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon violet mx-auto mb-3"><i class="fas fa-calendar-alt"></i></div>
+            <div class="stat-value">{{ total_events }}</div>
+            <div class="stat-label">Total Events</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon cyan mx-auto mb-3"><i class="fas fa-users"></i></div>
+            <div class="stat-value">{{ total_volunteers }}</div>
+            <div class="stat-label">Volunteers</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon amber mx-auto mb-3"><i class="fas fa-star"></i></div>
+            <div class="stat-value">{{ avg_rating }}<span style="font-size:1.4rem; color:#fbbf24;"> ★</span></div>
+            <div class="stat-label">Avg Rating</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="dashboard-card text-center">
+            <div class="stat-icon green mx-auto mb-3"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-value">{{ approved_applications }}<span style="font-size:1.2rem; color:var(--text-muted);">/{{ total_applications }}</span></div>
+            <div class="stat-label">Apps Approved</div>
+        </div>
+    </div>
+</div>
+
+<!-- Tables Row -->
+<div class="row g-4">
+    <!-- Events Log -->
+    <div class="col-lg-6">
+        <div class="content-card h-100">
+            <h5 class="mb-3" style="font-family:var(--font-head); color:var(--neon-violet); font-size:0.85rem; letter-spacing:1px; text-transform:uppercase;">
+                <i class="fas fa-calendar-check me-2"></i>Events Log
+            </h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" style="font-size:0.88rem;">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Event</th>
+                            <th>Organizer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <td style="font-weight:600; color:var(--neon-cyan);">{{ event.title }}</td>
+                            <td style="color:var(--text-muted);">{{ event.organizer.organization_name }}</td>
+                            <td style="color:var(--text-muted);">{{ event.date }}</td>
+                            <td>
+                                {% if event.status == 'Upcoming' %}<span class="badge bg-info">Upcoming</span>
+                                {% elif event.status == 'Ongoing' %}<span class="badge bg-warning">Ongoing</span>
+                                {% elif event.status == 'Completed' %}<span class="badge bg-success">Completed</span>
+                                {% else %}<span class="badge bg-danger">Cancelled</span>{% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center py-4" style="color:var(--text-muted);">No events found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Volunteer Activity -->
+    <div class="col-lg-6">
+        <div class="content-card h-100">
+            <h5 class="mb-3" style="font-family:var(--font-head); color:var(--neon-cyan); font-size:0.85rem; letter-spacing:1px; text-transform:uppercase;">
+                <i class="fas fa-user-check me-2"></i>Volunteer Activity
+            </h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" style="font-size:0.88rem;">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Volunteer</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Account</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vol in volunteers %}
+                        <tr>
+                            <td style="font-weight:600; color:var(--text-main);">{{ vol.name }}</td>
+                            <td style="color:var(--text-muted);">{{ vol.phone }}</td>
+                            <td style="color:var(--text-muted); font-size:0.82rem;">{{ vol.email }}</td>
+                            <td>
+                                {% if vol.loginid.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Blocked</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="4" class="text-center py-4" style="color:var(--text-muted);">No volunteers found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    nav, button, .btn { display: none !important; }
+    .content-card, .dashboard-card {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        background: white !important;
+        color: black !important;
+    }
+    body { background: white !important; }
+}
+</style>
+{% endblock %}

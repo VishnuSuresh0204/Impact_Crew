@@ -1,47 +1,67 @@
 {% extends 'admin/base_admin.html' %}
 
 {% block content %}
-<div class="card">
-    <h2 style="margin-bottom: 1rem;">Manage Organizers</h2>
-    
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
-            <thead>
-                <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
-                    <th style="padding: 1rem;">Organization Name</th>
-                    <th style="padding: 1rem;">Contact Person</th>
-                    <th style="padding: 1rem;">Email</th>
-                    <th style="padding: 1rem;">Status</th>
-                    <th style="padding: 1rem;">Actions</th>
+<div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="page-title">Manage <span>Organizers</span></h1>
+        <p class="page-subtitle">Approve, reject or review registered organizers</p>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <span class="badge bg-warning fs-6 px-3 py-2">{{ organizers|length }} Total</span>
+    </div>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Organization</th>
+                    <th>Contact Person</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for org in organizers %}
-                <tr style="border-bottom: 1px solid var(--border-color);">
-                    <td style="padding: 1rem;">{{ org.organization_name }}</td>
-                    <td style="padding: 1rem;">{{ org.contact_person }}</td>
-                    <td style="padding: 1rem;">{{ org.email }}</td>
-                    <td style="padding: 1rem;">
+                <tr>
+                    <td class="text-muted">{{ forloop.counter }}</td>
+                    <td>
+                        <div style="font-weight: 600; color: var(--text-main);">{{ org.organization_name }}</div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);">{{ org.address|default:"—" }}</div>
+                    </td>
+                    <td>{{ org.contact_person }}</td>
+                    <td>{{ org.email }}</td>
+                    <td>{{ org.phone|default:"—" }}</td>
+                    <td>
                         {% if org.status == 'approved' %}
-                            <span style="color: var(--accent-color); font-weight: 600;">Approved</span>
+                            <span class="badge bg-success">✔ Approved</span>
                         {% elif org.status == 'rejected' %}
-                            <span style="color: var(--danger-color); font-weight: 600;">Rejected</span>
+                            <span class="badge bg-danger">✖ Rejected</span>
                         {% else %}
-                            <span style="color: #f59e0b; font-weight: 600;">Pending</span>
+                            <span class="badge bg-warning">⏳ Pending</span>
                         {% endif %}
                     </td>
-                    <td style="padding: 1rem;">
-                        {% if org.status == 'pending' %}
-                        <div style="display: flex; gap: 0.5rem;">
-                            <a href="{% url 'approve_organizer' org.id %}" class="btn" style="background: var(--accent-color); padding: 0.3rem 0.6rem; font-size: 0.9rem;">Approve</a>
-                            <a href="{% url 'reject_organizer' org.id %}" class="btn" style="background: var(--danger-color); padding: 0.3rem 0.6rem; font-size: 0.9rem;">Reject</a>
+                    <td>
+                        <div class="d-flex gap-2">
+                            {% if org.status != 'approved' %}
+                                <a href="{% url 'approve_organizer' org.id %}" class="btn btn-success btn-sm">Approve</a>
+                            {% endif %}
+                            {% if org.status != 'rejected' %}
+                                <a href="{% url 'reject_organizer' org.id %}" class="btn btn-danger btn-sm">Reject</a>
+                            {% endif %}
                         </div>
-                        {% endif %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" style="padding: 1rem; text-align: center;">No organizers found.</td>
+                    <td colspan="7" class="text-center py-5" style="color: var(--text-muted);">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏢</div>
+                        No organizers registered yet.
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

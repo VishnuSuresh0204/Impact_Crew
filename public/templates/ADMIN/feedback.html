@@ -1,0 +1,74 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="page-title">Complaints <span>&amp; Feedback</span></h1>
+        <p class="page-subtitle">Review and respond to messages from volunteers and organizers</p>
+    </div>
+    <span class="badge bg-warning fs-6 px-3 py-2">{{ feedbacks|length }} Total</span>
+</div>
+
+{% if feedbacks %}
+{% for fb in feedbacks %}
+<div class="content-card mb-4" style="border-left: 3px solid {% if fb.reply %}var(--neon-cyan){% else %}var(--neon-violet){% endif %}; border-radius: 0 20px 20px 0;">
+    <!-- Header Row -->
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+        <div class="d-flex align-items-center gap-3">
+            <div style="width:44px; height:44px; border-radius:12px; background: rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.3); display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0;">
+                {% if fb.user.userType == 'volunteer' %}🙋{% else %}🏢{% endif %}
+            </div>
+            <div>
+                <div style="font-weight:700; color:var(--text-main);">{{ fb.user.username }}</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); margin-top:1px;">
+                    <span class="badge bg-info me-2">{{ fb.user.userType|title }}</span>
+                    {{ fb.created_at|date:"M d, Y · g:i A" }}
+                </div>
+            </div>
+        </div>
+        {% if fb.reply %}
+            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Replied</span>
+        {% else %}
+            <span class="badge bg-warning"><i class="fas fa-clock me-1"></i>Awaiting Reply</span>
+        {% endif %}
+    </div>
+
+    <!-- Subject & Message -->
+    <div class="mb-3">
+        <div style="font-family:var(--font-head); font-size:0.85rem; letter-spacing:0.5px; color:var(--neon-violet); margin-bottom:0.4rem; text-transform:uppercase;">Subject</div>
+        <div style="font-size:1.05rem; font-weight:600; color:var(--text-main);">{{ fb.subject }}</div>
+    </div>
+    <div class="mb-3" style="background:rgba(0,0,0,0.2); border-radius:12px; padding:1rem; border:1px solid rgba(139,92,246,0.1);">
+        <div style="font-family:var(--font-head); font-size:0.75rem; letter-spacing:0.5px; color:var(--text-muted); margin-bottom:0.4rem; text-transform:uppercase;">Message</div>
+        <p style="color:#cbd5e1; margin:0; line-height:1.7;">{{ fb.message }}</p>
+    </div>
+
+    <!-- Reply Section -->
+    {% if fb.reply %}
+    <div style="background:rgba(0,212,255,0.05); border:1px solid rgba(0,212,255,0.2); border-radius:12px; padding:1rem;">
+        <div style="font-family:var(--font-head); font-size:0.75rem; letter-spacing:0.5px; color:var(--neon-cyan); margin-bottom:0.4rem; text-transform:uppercase;">
+            <i class="fas fa-reply me-1"></i>Admin Reply
+        </div>
+        <p style="color:#e2e8f0; margin:0;">{{ fb.reply }}</p>
+    </div>
+    {% else %}
+    <form method="POST" action="{% url 'admin_feedback' %}" class="d-flex gap-2 align-items-start">
+        {% csrf_token %}
+        <input type="hidden" name="feedback_id" value="{{ fb.id }}">
+        <input type="text" name="reply" class="form-control" placeholder="Type your reply here..." required>
+        <button type="submit" class="btn btn-primary btn-sm" style="white-space:nowrap; padding: 0.75rem 1.25rem;">
+            <i class="fas fa-paper-plane me-1"></i>Send Reply
+        </button>
+    </form>
+    {% endif %}
+</div>
+{% endfor %}
+
+{% else %}
+<div class="content-card text-center py-5">
+    <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.4;">💬</div>
+    <h5 style="color: var(--text-muted); font-family: var(--font-head); letter-spacing: 1px;">No Complaints or Feedback</h5>
+    <p style="color: var(--text-muted); margin-top: 0.5rem; font-size: 0.9rem;">The system is running smoothly — no user messages yet.</p>
+</div>
+{% endif %}
+{% endblock %}
