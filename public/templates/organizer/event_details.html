@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <h2 style="color: var(--primary-color); margin-bottom: 0.5rem;">{{ event.title }}</h2>
+            <p style="color: #94a3b8; font-size: 1rem; margin-bottom: 1rem;">
+                📅 {{ event.date }} | ⏰ {{ event.time }} | 📍 {{ event.location }}
+            </p>
+        </div>
+        <span style="background: rgba(59, 130, 246, 0.2); color: var(--primary-color); padding: 0.4rem 0.8rem; border-radius: 4px; font-weight: bold;">
+            {{ event.status }}
+        </span>
+    </div>
+    <p>{{ event.description }}</p>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3 style="margin-bottom: 1rem; color: var(--accent-color);">Volunteer Applications</h3>
+        {% if applications %}
+        <ul style="list-style: none;">
+            {% for app in applications %}
+            <li style="padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>{{ app.volunteer.name }}</strong><br>
+                    <small style="color: #94a3b8;">{{ app.volunteer.phone }} | {{ app.volunteer.email }}</small>
+                </div>
+                <span style="font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid var(--border-color);">{{ app.status }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color: #94a3b8;">No applications yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="color: #f59e0b;">Event Tasks</h3>
+            <button class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" disabled>Add Task</button>
+        </div>
+        {% if tasks %}
+        <ul style="list-style: none;">
+            {% for task in tasks %}
+            <li style="padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.5rem;">
+                <strong>{{ task.title }}</strong> - {{ task.status }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p style="color: #94a3b8;">No tasks created for this event.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
