@@ -31,6 +31,7 @@ urlpatterns = [
     
     # Organizer
     path('organizer_dashboard/', views.organizer_dashboard, name='organizer_dashboard'),
+    path('organizer/profile/', views.organizer_profile, name='organizer_profile'),
     path('create_event/', views.create_event, name='create_event'),
     path('organizer/event/<int:event_id>/', views.organizer_event_details, name='organizer_event_details'),
     path('organizer/application/<int:app_id>/<str:status>/', views.update_application_status, name='update_application_status'),

@@ -208,6 +208,22 @@ def organizer_event_details(request, event_id):
     })
 
 
+@login_required
+def organizer_profile(request):
+    org = Organizer.objects.get(loginid_id=request.session['lid'])
+    if request.method == 'POST':
+        org.organization_name = request.POST.get('organization_name', org.organization_name)
+        org.contact_person    = request.POST.get('contact_person',    org.contact_person)
+        org.phone             = request.POST.get('phone',             org.phone)
+        org.email             = request.POST.get('email',             org.email)
+        org.address           = request.POST.get('address',           org.address)
+        org.save()
+        messages.success(request, "Profile updated successfully.")
+        return redirect('organizer_profile')
+
+    return render(request, 'organizer/profile.html', {'org': org})
+
+
 # ------------------------------------------------
 # 5. Volunteer Home & Views
 # ------------------------------------------------

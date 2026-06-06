@@ -7,7 +7,7 @@
         <p style="color: #94a3b8;">Manage your events, volunteers, and tasks from here.</p>
     </div>
     <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-        <a href="{% url 'organizer_create_event' %}" class="btn">➕ Create New Event</a>
+        <a href="{% url 'create_event' %}" class="btn">➕ Create New Event</a>
         <a href="{% url 'submit_feedback' %}" class="btn btn-outline">💬 Submit Feedback</a>
     </div>
 </div>
@@ -37,7 +37,7 @@
     <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
         <h3>No events created yet.</h3>
         <p style="color: #94a3b8; margin: 1rem 0;">Create your first event to start accepting volunteers!</p>
-        <a href="{% url 'organizer_create_event' %}" class="btn">Create Event</a>
+        <a href="{% url 'create_event' %}" class="btn">Create Event</a>
     </div>
     {% endfor %}
 </div>

@@ -1,4 +1,12 @@
+{% if request.user.userType == 'organizer' %}
+{% extends 'organizer/base_organizer.html' %}
+{% elif request.user.userType == 'volunteer' %}
+{% extends 'volunteer/base_volunteer.html' %}
+{% else %}
 {% extends 'base.html' %}
+{% endif %}
+
+{% block title %}Feedback & Complaints – ImpactCrew{% endblock %}
 
 {% block content %}
 <div style="max-width: 750px; margin: 0 auto;">

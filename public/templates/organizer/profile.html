@@ -1,0 +1,84 @@
+{% extends 'organizer/base_organizer.html' %}
+
+{% block title %}My Profile – OrgPanel{% endblock %}
+
+{% block content %}
+<div style="max-width: 780px; margin: 0 auto;">
+
+    <!-- Header Card -->
+    <div class="card" style="margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #0ea5e9, #10b981); display: flex; align-items: center; justify-content: center; font-size: 2rem; flex-shrink: 0;">🏢</div>
+        <div>
+            <h2 style="color: var(--primary-color); margin-bottom: 0.25rem;">{{ org.organization_name }}</h2>
+            <p style="color: #94a3b8; font-size: 0.95rem;">Contact: {{ org.contact_person }}</p>
+            <span style="display: inline-block; margin-top: 0.4rem; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+                {% if org.status == 'approved' %}background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3);
+                {% elif org.status == 'pending' %}background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3);
+                {% else %}background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3);{% endif %}">
+                {{ org.status|capfirst }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Edit Profile Form -->
+    <div class="card">
+        <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">✏️ Update Profile Details</h3>
+
+        <form method="POST" action="{% url 'organizer_profile' %}">
+            {% csrf_token %}
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <label for="organization_name">Organization Name</label>
+                    <input type="text" id="organization_name" name="organization_name" value="{{ org.organization_name }}" required placeholder="Your organization name">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <label for="contact_person">Contact Person</label>
+                    <input type="text" id="contact_person" name="contact_person" value="{{ org.contact_person }}" required placeholder="Full name of contact">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" name="phone" value="{{ org.phone }}" required placeholder="+91 9876543210">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" value="{{ org.email }}" required placeholder="contact@org.com">
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" rows="3" placeholder="Full office address...">{{ org.address }}</textarea>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                <button type="submit" class="btn" id="save-profile-btn">💾 Save Changes</button>
+                <a href="{% url 'organizer_dashboard' %}" class="btn btn-outline">← Back to Dashboard</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Account Info Card -->
+    <div class="card" style="margin-top: 1.5rem;">
+        <h3 style="color: #94a3b8; margin-bottom: 1rem; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.08em;">Account Information</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem;">
+                <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.25rem;">USERNAME</p>
+                <p style="font-weight: 700; color: var(--text-color);">{{ request.user.username }}</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem;">
+                <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.25rem;">ACCOUNT TYPE</p>
+                <p style="font-weight: 700; color: var(--primary-color);">Organizer</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem;">
+                <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.25rem;">STATUS</p>
+                <p style="font-weight: 700; color: {% if org.status == 'approved' %}#34d399{% elif org.status == 'pending' %}#fbbf24{% else %}#fca5a5{% endif %};">{{ org.status|capfirst }}</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

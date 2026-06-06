@@ -201,23 +201,10 @@
     <nav>
         <a href="{% url 'index' %}" class="logo">Impact<span>Crew</span></a>
         <div class="nav-links">
-            {% if user.is_authenticated %}
-                {% if user.userType == 'admin' %}
-                    <a href="{% url 'admin_dashboard' %}">Dashboard</a>
-                    <a href="{% url 'manage_organizers' %}">Organizers</a>
-                {% elif user.userType == 'organizer' %}
-                    <a href="{% url 'organizer_dashboard' %}">Dashboard</a>
-                    <a href="{% url 'create_event' %}">Create Event</a>
-                {% elif user.userType == 'volunteer' %}
-                    <a href="{% url 'volunteer_dashboard' %}">Dashboard</a>
-                    <a href="{% url 'volunteer_profile' %}">Profile</a>
-                {% endif %}
-                <a href="{% url 'logout' %}" class="btn">Logout</a>
-            {% else %}
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'register_volunteer' %}" class="btn">Volunteer</a>
-                <a href="{% url 'register_organizer' %}" class="btn btn-outline">Organize</a>
-            {% endif %}
+            <a href="{% url 'index' %}#how">How It Works</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register_volunteer' %}" class="btn">Volunteer</a>
+            <a href="{% url 'register_organizer' %}" class="btn btn-outline">Organize</a>
         </div>
     </nav>
 
