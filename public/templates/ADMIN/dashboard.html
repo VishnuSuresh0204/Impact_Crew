@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="grid">
+    <div class="card" style="text-align: center;">
+        <h3 style="color: var(--primary-color);">Total Organizers</h3>
+        <p style="font-size: 3rem; font-weight: 800;">{{ total_organizers }}</p>
+    </div>
+    <div class="card" style="text-align: center;">
+        <h3 style="color: var(--accent-color);">Total Volunteers</h3>
+        <p style="font-size: 3rem; font-weight: 800;">{{ total_volunteers }}</p>
+    </div>
+    <div class="card" style="text-align: center;">
+        <h3 style="color: #f59e0b;">Total Events</h3>
+        <p style="font-size: 3rem; font-weight: 800;">{{ total_events }}</p>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h2>Admin Controls</h2>
+    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+        <a href="{% url 'manage_organizers' %}" class="btn">Manage Organizers</a>
+        <button class="btn btn-outline" disabled>Manage Categories (Coming Soon)</button>
+        <button class="btn btn-outline" disabled>Manage Skills (Coming Soon)</button>
+    </div>
+</div>
+{% endblock %}
