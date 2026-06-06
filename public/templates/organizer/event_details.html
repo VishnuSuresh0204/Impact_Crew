@@ -14,6 +14,11 @@
         </span>
     </div>
     <p>{{ event.description }}</p>
+    
+    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+        <a href="{% url 'track_attendance' event.id %}" class="btn">Track Attendance</a>
+        <a href="{% url 'evaluate_performance' event.id %}" class="btn btn-outline">Evaluate Performance</a>
+    </div>
 </div>
 
 <div class="grid">
@@ -27,7 +32,13 @@
                     <strong>{{ app.volunteer.name }}</strong><br>
                     <small style="color: #94a3b8;">{{ app.volunteer.phone }} | {{ app.volunteer.email }}</small>
                 </div>
-                <span style="font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid var(--border-color);">{{ app.status }}</span>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-size: 0.85rem; padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid var(--border-color); font-weight: bold;">{{ app.status }}</span>
+                    {% if app.status == 'Pending' %}
+                        <a href="{% url 'update_application_status' app.id 'Approved' %}" class="btn" style="background: var(--accent-color); padding: 0.25rem 0.5rem; font-size: 0.8rem;">Approve</a>
+                        <a href="{% url 'update_application_status' app.id 'Rejected' %}" class="btn" style="background: var(--danger-color); padding: 0.25rem 0.5rem; font-size: 0.8rem;">Reject</a>
+                    {% endif %}
+                </div>
             </li>
             {% endfor %}
         </ul>
@@ -39,13 +50,17 @@
     <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
             <h3 style="color: #f59e0b;">Event Tasks</h3>
-            <button class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;" disabled>Add Task</button>
+            <a href="{% url 'create_task' event.id %}" class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Add Task</a>
         </div>
         {% if tasks %}
         <ul style="list-style: none;">
             {% for task in tasks %}
-            <li style="padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.5rem;">
-                <strong>{{ task.title }}</strong> - {{ task.status }}
+            <li style="padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>{{ task.title }}</strong> - <span style="font-size: 0.85rem; font-weight: bold;">{{ task.status }}</span>
+                    <p style="font-size: 0.9rem; color: #94a3b8; margin-top: 0.25rem;">{{ task.description }}</p>
+                </div>
+                <a href="{% url 'assign_task' task.id %}" class="btn" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Assign Task</a>
             </li>
             {% endfor %}
         </ul>

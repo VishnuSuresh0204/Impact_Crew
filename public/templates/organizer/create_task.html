@@ -1,0 +1,36 @@
+{% extends 'organizer/base_organizer.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">Create Task for Event: {{ event.title }}</h2>
+    
+    <form method="POST" action="{% url 'create_task' event.id %}">
+        {% csrf_token %}
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label>Task Title</label>
+            <input type="text" name="title" required placeholder="e.g., Setup Registration Desk">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
+            <label>Task Description</label>
+            <textarea name="description" rows="4" required placeholder="Explain what the volunteer needs to do..."></textarea>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
+            <label>Required Skills (Optional)</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                {% for skill in skills %}
+                <label style="font-weight: normal; display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" name="required_skills" value="{{ skill.id }}" style="width: auto;">
+                    {{ skill.name }}
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn">Create Task</button>
+            <a href="{% url 'organizer_event_details' event.id %}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

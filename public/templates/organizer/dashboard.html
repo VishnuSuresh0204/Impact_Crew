@@ -1,21 +1,33 @@
 {% extends 'organizer/base_organizer.html' %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-    <h2>Organizer Dashboard</h2>
-    <a href="{% url 'create_event' %}" class="btn">Create New Event</a>
+<div class="card" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+        <h2 style="color: var(--primary-color);">Organizer Dashboard</h2>
+        <p style="color: #94a3b8;">Manage your events, volunteers, and tasks from here.</p>
+    </div>
+    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <a href="{% url 'organizer_create_event' %}" class="btn">➕ Create New Event</a>
+        <a href="{% url 'submit_feedback' %}" class="btn btn-outline">💬 Submit Feedback</a>
+    </div>
 </div>
 
+<h3 style="margin-bottom: 1rem;">Your Events</h3>
 <div class="grid">
     {% for event in events %}
     <div class="card">
-        <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">{{ event.title }}</h3>
+        <h3 style="color: var(--accent-color); margin-bottom: 0.5rem;">{{ event.title }}</h3>
         <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">
-            📅 {{ event.date }} | ⏰ {{ event.time }} | 📍 {{ event.location }}
+            📅 {{ event.date }} | ⏰ {{ event.time }}<br>
+            📍 {{ event.location }}
         </p>
         <p style="margin-bottom: 1rem;">{{ event.description|truncatewords:20 }}</p>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="background: rgba(59, 130, 246, 0.2); color: var(--primary-color); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">
+            <span style="font-size: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: bold;
+                {% if event.status == 'Upcoming' %}background: rgba(59,130,246,0.1); color: #60a5fa;
+                {% elif event.status == 'Ongoing' %}background: rgba(16,185,129,0.1); color: #34d399;
+                {% else %}background: rgba(148,163,184,0.1); color: #94a3b8;{% endif %}
+            ">
                 {{ event.status }}
             </span>
             <a href="{% url 'organizer_event_details' event.id %}" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">Manage Event</a>
@@ -24,8 +36,8 @@
     {% empty %}
     <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
         <h3>No events created yet.</h3>
-        <p style="margin-bottom: 1.5rem; color: #94a3b8;">Start by creating your first volunteer event.</p>
-        <a href="{% url 'create_event' %}" class="btn">Create Event</a>
+        <p style="color: #94a3b8; margin: 1rem 0;">Create your first event to start accepting volunteers!</p>
+        <a href="{% url 'organizer_create_event' %}" class="btn">Create Event</a>
     </div>
     {% endfor %}
 </div>

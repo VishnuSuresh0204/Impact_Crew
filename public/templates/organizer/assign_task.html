@@ -1,0 +1,40 @@
+{% extends 'organizer/base_organizer.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">Assign Task: {{ task.title }}</h2>
+    <p style="color: #94a3b8; margin-bottom: 1.5rem;">{{ task.description }}</p>
+    
+    <form method="POST" action="{% url 'assign_task' task.id %}">
+        {% csrf_token %}
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label>Select Approved Volunteer</label>
+            <select name="volunteer" required>
+                <option value="">-- Choose Volunteer --</option>
+                {% for vol in volunteers %}
+                <option value="{{ vol.id }}">{{ vol.name }} ({{ vol.phone }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="submit" class="btn">Assign Task</button>
+            <a href="{% url 'organizer_event_details' task.event.id %}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% block extra_css %}
+select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: rgba(0,0,0,0.3);
+    color: var(--text-color);
+    font-size: 1rem;
+}
+select option {
+    background: var(--bg-color);
+}
+{% endblock %}
+{% endblock %}

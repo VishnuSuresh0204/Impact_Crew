@@ -1,0 +1,57 @@
+{% extends 'organizer/base_organizer.html' %}
+
+{% block content %}
+<div class="card" style="margin-bottom: 2rem;">
+    <h2 style="color: var(--primary-color); margin-bottom: 0.5rem;">Evaluate Volunteer Performance</h2>
+    <p style="color: #94a3b8;">Rate volunteers who attended <strong>{{ event.title }}</strong>. Ratings are out of 5 stars.</p>
+</div>
+
+{% if volunteers %}
+<form method="POST" action="{% url 'evaluate_performance' event.id %}">
+    {% csrf_token %}
+    {% for vol in volunteers %}
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h3 style="color: var(--primary-color);">{{ vol.name }}</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem;">{{ vol.phone }} | {{ vol.email }}</p>
+            </div>
+            {% if reviews|dictsort:vol.id %}
+                {% with review=reviews|default_if_none:None %}
+                {% endwith %}
+            {% endif %}
+        </div>
+
+        <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem;">
+            <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Rating (1-5 ⭐)</label>
+                <select name="rating_{{ vol.id }}" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: var(--text-color); font-size: 1rem;">
+                    <option value="">-- Select Rating --</option>
+                    <option value="1" {% if reviews and reviews|get:vol.id and reviews|get:vol.id.rating == 1 %}selected{% endif %}>1 ⭐ - Poor</option>
+                    <option value="2" {% if reviews and reviews|get:vol.id and reviews|get:vol.id.rating == 2 %}selected{% endif %}>2 ⭐⭐ - Fair</option>
+                    <option value="3" {% if reviews and reviews|get:vol.id and reviews|get:vol.id.rating == 3 %}selected{% endif %}>3 ⭐⭐⭐ - Good</option>
+                    <option value="4" {% if reviews and reviews|get:vol.id and reviews|get:vol.id.rating == 4 %}selected{% endif %}>4 ⭐⭐⭐⭐ - Great</option>
+                    <option value="5" {% if reviews and reviews|get:vol.id and reviews|get:vol.id.rating == 5 %}selected{% endif %}>5 ⭐⭐⭐⭐⭐ - Excellent</option>
+                </select>
+            </div>
+            <div>
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Remarks / Feedback</label>
+                <textarea name="remarks_{{ vol.id }}" rows="3" placeholder="Write your feedback for this volunteer..." style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: var(--text-color); font-size: 1rem;"></textarea>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+        <button type="submit" class="btn">Submit Evaluations</button>
+        <a href="{% url 'organizer_event_details' event.id %}" class="btn btn-outline">Cancel</a>
+    </div>
+</form>
+{% else %}
+<div class="card" style="text-align: center; padding: 3rem;">
+    <h3>No volunteers marked as present yet.</h3>
+    <p style="color: #94a3b8; margin: 1rem 0;">Please track attendance first before evaluating performance.</p>
+    <a href="{% url 'track_attendance' event.id %}" class="btn">Track Attendance</a>
+</div>
+{% endif %}
+{% endblock %}

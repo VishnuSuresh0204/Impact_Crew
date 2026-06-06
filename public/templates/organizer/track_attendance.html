@@ -1,0 +1,46 @@
+{% extends 'organizer/base_organizer.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <h2 style="color: var(--primary-color); margin-bottom: 0.5rem;">Track Attendance</h2>
+    <p style="color: #94a3b8; margin-bottom: 2rem;">Mark attendance for approved volunteers for event: <strong>{{ event.title }}</strong>. Saving attendance marks the event as completed.</p>
+    
+    <form method="POST" action="{% url 'track_attendance' event.id %}">
+        {% csrf_token %}
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
+                        <th style="padding: 1rem; width: 10%; text-align: center;">Present</th>
+                        <th style="padding: 1rem; width: 45%;">Volunteer Name</th>
+                        <th style="padding: 1rem; width: 45%;">Contact Info</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in approved_apps %}
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 1rem; text-align: center;">
+                            <input type="checkbox" name="attendance" value="{{ app.volunteer.id }}" style="width: 20px; height: 20px; cursor: pointer;"
+                                   {% if app.volunteer.id in attendance_records and attendance_records|get_item:app.volunteer.id or attendance_records.items %}
+                                   {% comment %}Simple check for items{% endcomment %}
+                                   {% endif %}>
+                        </td>
+                        <td style="padding: 1rem; font-weight: 600;">{{ app.volunteer.name }}</td>
+                        <td style="padding: 1rem; color: #cbd5e1;">{{ app.volunteer.phone }} | {{ app.volunteer.email }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" style="padding: 1rem; text-align: center;">No approved volunteers for this event.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn">Save Attendance</button>
+            <a href="{% url 'organizer_event_details' event.id %}" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
