@@ -1,0 +1,29 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="content-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="page-title mb-0" style="font-size:1.5rem;">
+                    <i class="fas fa-edit me-2 text-cyan"></i> EDIT DISTRICT
+                </h2>
+                <a href="/admin_manage_districts" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Return
+                </a>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label class="form-label text-muted" style="font-family:var(--font-head); letter-spacing:1px; font-size:0.8rem;">DISTRICT NAME</label>
+                    <input type="text" name="name" class="form-control bg-dark text-light border-primary" value="{{ district.name }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 fw-bold py-2" style="letter-spacing:1.5px; font-family:var(--font-head);">
+                    SAVE CHANGES
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
