@@ -1,36 +1,462 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImpactCrew – Intelligent Event Volunteer Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
 
-{% block content %}
-<div class="hero" style="background-image: linear-gradient(rgba(11, 17, 32, 0.7), rgba(11, 17, 32, 0.9)), url('/static/images/real-hero-bg.jpg');">
-    <h1>Connect. Contribute. Impact.</h1>
-    <p>ImpactCrew is an intelligent event volunteer management system designed to seamlessly connect passionate volunteers with impactful community initiatives.</p>
-    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-        <a href="{% url 'register_volunteer' %}" class="btn" style="padding: 1rem 2rem; font-size: 1.1rem;">Join as Volunteer</a>
-        <a href="{% url 'register_organizer' %}" class="btn btn-outline" style="padding: 1rem 2rem; font-size: 1.1rem;">Host an Event</a>
-    </div>
-</div>
+        body {
+            min-height: 100vh;
+            background-color: #0b1120;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
 
-<div class="grid" style="margin-top: 4rem;">
-    <div class="card" style="text-align: center; padding: 0; overflow: hidden;">
-        <img src="/static/images/volunteers_card.png" alt="Volunteers" style="width: 100%; height: 200px; object-fit: cover;">
-        <div style="padding: 2rem;">
-            <h2 style="color: var(--primary-color); margin-bottom: 1rem;">For Volunteers</h2>
-            <p>Discover events that match your skills and passions. Track your hours, build your profile, and make a real difference in the community.</p>
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.1rem 6%;
+            background: rgba(11, 17, 32, 0.75);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 900;
+            text-decoration: none;
+            color: #fff;
+            letter-spacing: -0.03em;
+        }
+        .logo span { color: #3b82f6; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.25s;
+        }
+        .nav-links a:hover { color: #fff; }
+
+        .btn-nav {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: #fff !important;
+            padding: 0.55rem 1.4rem;
+            border-radius: 8px;
+            font-weight: 700 !important;
+            font-size: 0.9rem !important;
+            transition: opacity 0.25s, transform 0.2s !important;
+        }
+        .btn-nav:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .btn-nav-outline {
+            border: 1.5px solid rgba(255,255,255,0.25);
+            color: #fff !important;
+            padding: 0.5rem 1.3rem;
+            border-radius: 8px;
+            font-weight: 600 !important;
+            transition: border-color 0.25s, background 0.25s !important;
+        }
+        .btn-nav-outline:hover { border-color: #3b82f6; background: rgba(59,130,246,0.1); }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            background-image:
+                linear-gradient(to bottom, rgba(11,17,32,0.6) 0%, rgba(11,17,32,0.92) 80%),
+                url('/static/images/real-hero-bg.jpg');
+            background-size: cover;
+            background-position: center top;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 7rem 2rem 5rem;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(59,130,246,0.15);
+            border: 1px solid rgba(59,130,246,0.3);
+            color: #93c5fd;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.35rem 0.9rem;
+            border-radius: 100px;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.8rem, 7vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, #60a5fa 0%, #c084fc 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 620px;
+            line-height: 1.75;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .cta-primary {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: #fff;
+            padding: 0.9rem 2.2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            box-shadow: 0 8px 30px rgba(59,130,246,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cta-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(59,130,246,0.5); }
+
+        .cta-secondary {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            padding: 0.9rem 2.2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            transition: background 0.2s, border-color 0.2s, transform 0.2s;
+        }
+        .cta-secondary:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.3); transform: translateY(-3px); }
+
+        /* ── STATS ── */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            padding: 2.5rem 6%;
+            background: rgba(255,255,255,0.03);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .stat-item { text-align: center; }
+        .stat-item .num {
+            font-size: 2.4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #60a5fa, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-item .label { font-size: 0.85rem; color: #64748b; font-weight: 600; margin-top: 0.2rem; }
+
+        /* ── SECTION ── */
+        section { padding: 6rem 6%; }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #60a5fa;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            max-width: 700px;
+        }
+
+        .section-sub {
+            color: #64748b;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        /* ── FEATURE CARDS ── */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            backdrop-filter: blur(8px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .feature-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .feature-card-body {
+            padding: 2rem;
+        }
+
+        .feature-icon-wrap {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .feature-card-body h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+
+        .feature-card-body p { color: #64748b; font-size: 0.95rem; line-height: 1.65; }
+
+        /* ── HOW IT WORKS ── */
+        .how-bg { background: rgba(255,255,255,0.02); }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: rgba(30,41,59,0.4);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px;
+            backdrop-filter: blur(8px);
+            transition: transform 0.3s;
+        }
+        .step:hover { transform: translateY(-4px); }
+
+        .step-num {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.2rem;
+            box-shadow: 0 6px 20px rgba(59,130,246,0.3);
+        }
+
+        .step h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .step p { color: #64748b; font-size: 0.9rem; line-height: 1.6; }
+
+        /* ── CTA BAND ── */
+        .cta-band {
+            background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(139,92,246,0.15));
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 24px;
+            padding: 4rem 3rem;
+            text-align: center;
+            margin: 0 6% 6rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-band h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.02em; }
+        .cta-band p { color: #64748b; font-size: 1.05rem; margin-bottom: 2rem; }
+        .cta-band .cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 2.5rem 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        footer .brand { font-size: 1.2rem; font-weight: 800; color: #fff; }
+        footer .brand span { color: #3b82f6; }
+        footer p { color: #475569; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <a href="/" class="logo">Impact<span>Crew</span></a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how">How It Works</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register_organizer' %}" class="btn-nav-outline">Host an Event</a>
+            <a href="{% url 'register_volunteer' %}" class="btn-nav">Join Now</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-badge">✨ Intelligent Volunteer Management</div>
+        <h1>
+            Connect. Contribute.<br>
+            <span class="gradient">Make an Impact.</span>
+        </h1>
+        <p>ImpactCrew is the all-in-one platform that connects passionate volunteers with impactful events — powered by smart skill matching and real-time coordination.</p>
+        <div class="hero-cta">
+            <a href="{% url 'register_volunteer' %}" class="cta-primary">Join as Volunteer →</a>
+            <a href="{% url 'register_organizer' %}" class="cta-secondary">Host an Event</a>
         </div>
     </div>
-    <div class="card" style="text-align: center; padding: 0; overflow: hidden;">
-        <img src="/static/images/organizers_card.png" alt="Organizers" style="width: 100%; height: 200px; object-fit: cover;">
-        <div style="padding: 2rem;">
-            <h2 style="color: var(--accent-color); margin-bottom: 1rem;">For Organizers</h2>
-            <p>Streamline your volunteer management. Easily recruit, assign tasks, and track attendance all in one powerful platform.</p>
+
+    <!-- STATS -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="num">500+</div>
+            <div class="label">Active Volunteers</div>
+        </div>
+        <div class="stat-item">
+            <div class="num">120+</div>
+            <div class="label">Events Organized</div>
+        </div>
+        <div class="stat-item">
+            <div class="num">80+</div>
+            <div class="label">Organizations</div>
+        </div>
+        <div class="stat-item">
+            <div class="num">15k+</div>
+            <div class="label">Volunteer Hours</div>
         </div>
     </div>
-    <div class="card" style="text-align: center; padding: 0; overflow: hidden;">
-        <img src="/static/images/matching_card.png" alt="Smart Matching" style="width: 100%; height: 200px; object-fit: cover;">
-        <div style="padding: 2rem;">
-            <h2 style="color: #f59e0b; margin-bottom: 1rem;">Smart Matching</h2>
-            <p>Our intelligent system matches volunteer skills with event requirements, ensuring the right people are in the right roles.</p>
+
+    <!-- FEATURES -->
+    <section id="features">
+        <p class="section-label">What We Offer</p>
+        <h2 class="section-title">Everything you need to run successful events</h2>
+        <p class="section-sub">From volunteer recruitment to task tracking and performance reviews — ImpactCrew simplifies every step.</p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <img src="/static/images/volunteers_card.png" alt="Volunteers">
+                <div class="feature-card-body">
+                    <div class="feature-icon-wrap" style="background: rgba(244,63,94,0.15);">🌱</div>
+                    <h3 style="color: #fb7185;">For Volunteers</h3>
+                    <p>Browse skill-matched events, apply with one click, track your participation history, and download your certificates.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="/static/images/organizers_card.png" alt="Organizers">
+                <div class="feature-card-body">
+                    <div class="feature-icon-wrap" style="background: rgba(14,165,233,0.15);">📋</div>
+                    <h3 style="color: #38bdf8;">For Organizers</h3>
+                    <p>Create events, approve applications, assign tasks, mark attendance, and evaluate volunteer performance — all in one place.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <img src="/static/images/matching_card.png" alt="Smart Matching">
+                <div class="feature-card-body">
+                    <div class="feature-icon-wrap" style="background: rgba(139,92,246,0.15);">🧠</div>
+                    <h3 style="color: #c084fc;">Smart Matching</h3>
+                    <p>Our intelligent engine automatically recommends volunteers whose skills perfectly match your event requirements.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="how-bg">
+        <p class="section-label">Simple Process</p>
+        <h2 class="section-title">How ImpactCrew Works</h2>
+        <p class="section-sub">Get started in minutes and make your first impact the same day.</p>
+
+        <div class="steps-grid">
+            <div class="step">
+                <div class="step-num">1</div>
+                <h4>Create Your Profile</h4>
+                <p>Register as a Volunteer or Organizer and set up your profile with skills and interests.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <h4>Discover Events</h4>
+                <p>Browse upcoming events or post your own — filtered intelligently by skill and location.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <h4>Apply & Get Matched</h4>
+                <p>Apply to events with a single click. Organizers review and approve your application.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <h4>Contribute & Grow</h4>
+                <p>Complete tasks, get rated, and earn certificates that showcase your volunteer journey.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA BAND -->
+    <div class="cta-band">
+        <h2>Ready to Make Your <span style="background: linear-gradient(135deg,#60a5fa,#c084fc); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Impact?</span></h2>
+        <p>Join the ImpactCrew community today — it's free and takes less than 2 minutes.</p>
+        <div class="cta-row">
+            <a href="{% url 'register_volunteer' %}" class="cta-primary">Start Volunteering →</a>
+            <a href="{% url 'register_organizer' %}" class="cta-secondary">Register Organization</a>
         </div>
     </div>
-</div>
-{% endblock %}
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="brand">Impact<span>Crew</span></div>
+        <p>© 2026 ImpactCrew. Intelligent Event Volunteer Management System.</p>
+    </footer>
+
+</body>
+</html>
