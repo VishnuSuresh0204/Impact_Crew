@@ -148,3 +148,16 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.user.username}"
+
+
+class Feedback(models.Model):
+    user = models.ForeignKey(Login, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=200)
+    message = models.TextField()
+    reply = models.TextField(blank=True, null=True)
+    status = models.CharField(max_length=20, default='Pending') # Pending, Resolved
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.subject} ({self.status})"
+
