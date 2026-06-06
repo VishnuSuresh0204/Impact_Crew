@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero">
+    <h1>Connect. Contribute. Impact.</h1>
+    <p>ImpactCrew is an intelligent event volunteer management system designed to seamlessly connect passionate volunteers with impactful community initiatives.</p>
+    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <a href="{% url 'register_volunteer' %}" class="btn" style="padding: 1rem 2rem; font-size: 1.1rem;">Join as Volunteer</a>
+        <a href="{% url 'register_organizer' %}" class="btn btn-outline" style="padding: 1rem 2rem; font-size: 1.1rem;">Host an Event</a>
+    </div>
+</div>
+
+<div class="grid" style="margin-top: 4rem;">
+    <div class="card" style="text-align: center;">
+        <h2 style="color: var(--primary-color); margin-bottom: 1rem;">For Volunteers</h2>
+        <p>Discover events that match your skills and passions. Track your hours, build your profile, and make a real difference in the community.</p>
+    </div>
+    <div class="card" style="text-align: center;">
+        <h2 style="color: var(--accent-color); margin-bottom: 1rem;">For Organizers</h2>
+        <p>Streamline your volunteer management. Easily recruit, assign tasks, and track attendance all in one powerful platform.</p>
+    </div>
+    <div class="card" style="text-align: center;">
+        <h2 style="color: #f59e0b; margin-bottom: 1rem;">Smart Matching</h2>
+        <p>Our intelligent system matches volunteer skills with event requirements, ensuring the right people are in the right roles.</p>
+    </div>
+</div>
+{% endblock %}
